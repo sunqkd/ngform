@@ -1,0 +1,25 @@
+
+<!--
+	1、ngNoForm 取消angular的接管
+	2、ngForm 可以被模板本地变量引用
+
+-->
+<form #myForm="ngForm" (ngSubmit)="createUser(myForm.value)">
+	<div>用户名：<input type="text" #myNickName="ngModel" ngModel name="nickname"></div>
+	<div>手机号：<input type="number" ngModel name="phoneinfo"></div>
+	<div>邮政编码：<input type="email" ngModel name="emailinfo"></div>
+
+    <div ngModelGroup="passwordInfo">
+		<div>密码：<input ngModel name="psw"  type="password"></div>
+		<div>确认密码：<input ngModel name="okpsw"  type="password"></div>
+	</div>
+	
+
+	<button type="submit">注册</button>
+</form>
+<div>
+	{{myForm.value | json}}
+</div>
+<div>
+	{{myNickName.value}}
+</div>

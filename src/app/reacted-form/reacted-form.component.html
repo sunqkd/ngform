@@ -1,0 +1,25 @@
+<!--相应式表单不可以引用   不可以用模板本地变量-->
+<!-- <input [formControl]="xxxxx"> -->
+
+
+<form [formGroup]="formModel" (submit)="createUser()">
+	<div>用户名：<input type="text"   formControlName="nickname"></div>
+	<div>手机号：<input type="number"  formControlName="phoneinfo"></div>
+	<div>邮箱：
+		<ul formArrayName = "emailinfo">
+			<li *ngFor="let e of formModel.get('emailinfo').controls;let i = index">
+				<input type="text" [formControlName] = "i">
+			</li>
+		</ul>
+
+		<button type="button" (click)="addEmail()">增加邮件地址</button>
+	</div>
+
+    <div formGroupName="passwordInfo">
+		<div>密码：<input  formControlName="psw"  type="password"></div>
+		<div>确认密码：<input  formControlName="okpsw"  type="password"></div>
+	</div>
+	
+	<button type="submit">注册</button>
+</form>
+
