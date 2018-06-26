@@ -9,6 +9,7 @@
 		<ul formArrayName = "emailinfo">
 			<li *ngFor="let e of formModel.get('emailinfo').controls;let i = index">
 				<input type="text" [formControlName] = "i">
+				<!--数组中没有 key数字属性 所以用【】括起来-->
 			</li>
 		</ul>
 

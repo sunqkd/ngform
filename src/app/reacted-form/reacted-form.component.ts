@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormArray, FormGroup, FormBuilder } from '@angular/forms';
+import { FormControl, FormArray, FormGroup, FormBuilder, AbstractControl, Validators } from '@angular/forms';
 
 @Component({
 	selector: 'app-reacted-form',
@@ -10,14 +10,14 @@ export class ReactedFormComponent implements OnInit {
 
 	// tom 用来初始FormControl的初始值
 	// FormGroup 有key属性、 FormArray没有 key属性
-	
+
 	// private nickName = new FormControl("tom");
 
-    // private passwordInfo = new FormGroup({
+	// private passwordInfo = new FormGroup({
 	// 	psw: new FormControl(),
 	// 	pswconform: new FormControl()
 	// });
-	
+
 	// private emials = new FormArray([
 	// 	new FormControl("a@a.com"),
 	// 	new FormControl("b@b.com"),
@@ -27,25 +27,44 @@ export class ReactedFormComponent implements OnInit {
 
 
 	// private xxxxx: FormControl;
-	
-	private formModel:FormGroup;
 
-	private fb:FormBuilder = new FormBuilder()
+	// 响应式标单校验 AbstractControl为group、array、control的父类
 
-	constructor() { 
-		
+	mobileValid(mobile: FormControl): any {
+		let value = (mobile.value || '') + '';
+		var mvreg = /^ \d{6} $/
+		let valid  = mvreg.test(value)
+		console.log("mobile" + valid)
+		return valid ? null : {mobile:true};
+	}
+
+    passwordValid(info: FormGroup) :any{
+		let psw = info.get("psw") as FormControl
+		let okpsw = info.get("okpsw") as FormControl
+		let valid:boolean = psw.value === okpsw.value;
+		console.log(valid + "密码");
+		return valid ? null : {password:true};
+	}
+
+	private formModel: FormGroup;
+
+	private fb: FormBuilder = new FormBuilder()
+
+	constructor() {
+		// Validators  预定义的校验器  Validators.maxLength
+
 		this.formModel = this.fb.group({
-			nickname: [''],
-			phoneinfo: [''],
+			nickname: ['xxx', [Validators.required,Validators.minLength(6)]],
+			phoneinfo: ['',this.mobileValid],
 
 			emailinfo: this.fb.array([
 				['']
 			]),
 
 			passwordInfo: this.fb.group({
-				psw:  [''],
-				okpsw:  ['']
-			})
+				psw: [''],
+				okpsw: ['']
+			},{ validator:this.passwordValid})
 		})
 
 		// 表单数据模型
@@ -66,11 +85,17 @@ export class ReactedFormComponent implements OnInit {
 		// });
 
 	}
-    addEmail(){
-		let emails = this.formModel.get('emailinfo') as FormArray;
-		emails.push( new FormControl() )
+	addEmail() {
+		let emails = this.formModel.get('emailinfo') as FormArray; // 强转成FormArray类型
+		emails.push(new FormControl())
 	}
-	createUser(){
+	createUser() {
+		let nicknameValid:boolean = this.formModel.get('nickname').valid;
+		let error:any = this.formModel.get('nickname').errors;
+
+		console.log(JSON.stringify(error));
+		console.log(nicknameValid)
+
 		console.log(this.formModel.value)
 	}
 
